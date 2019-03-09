@@ -1,0 +1,89 @@
+
+h4, h5, h6,
+h1, h2, h3 {margin-top: 0;}
+ul, ol {margin: 0;}
+p {margin: 0;}
+html, body{
+ font-family: 'Open Sans', sans-serif;
+   font-size: 100%;
+   background:#303540; 
+}
+
+.container:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+header .container {
+  width: 100%;
+  padding: 15px;
+  max-width: 1150px;
+  border-color: white;
+  border-bottom-style: solid;
+   border-bottom-width: 2px;
+}
+.click {
+ float: right;
+}
+
+.logo{   
+    float = left;
+}
+
+.menu{
+    float: left;
+    width: 33.333333333%;
+    max-width: 250px;
+    border-color: white;
+    border-right-style: solid;
+    border-width: 3px;
+}
+
+.content{
+    margin-top: 30px;
+    float: right;
+    width: 66.6666666667%;
+}
+
+.content img{
+    margin-left: 25px;
+    float: right;
+    width: 95%;
+    height: 95%;
+}    
+
+
+nav ul{
+    margin-top: 0px;
+    padding: 0;  
+    list-style: none;    
+}
+nav li {    
+  margin-top: 25px;
+  margin-bottom: 25px;
+  width: 80%;
+  height: 50px;
+  border-color: white;
+  border-style: solid;
+  border-width: 2px;
+}
+
+nav li a{
+    text-align: center;
+    margin: 0px;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+nav li a:hover, li a:focus{
+    color:red;
+}
+.menu .active{
+    color:red;
+}
+
+.menu .inactive{
+    border-style: none;
+}
