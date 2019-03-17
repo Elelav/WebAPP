@@ -6,7 +6,7 @@ package jcode;
  * and open the template in the editor.
  */
 
-import jcode.JDBC;
+import jcode.DataBaseActivitiesHandler;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -27,7 +27,8 @@ import oracle.jdbc.pool.OracleDataSource;
  */
 @WebServlet(urlPatterns = {"/Learnvlet"})
 public class Learnvlet extends HttpServlet {
-    JDBC kek = new JDBC();
+    DataBaseActivitiesHandler DBAH = new DataBaseActivitiesHandler();
+    
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,13 +38,13 @@ public class Learnvlet extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.sql.SQLException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            connect();
+            /* TODO output your page here. You may use following sample code. */           
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -51,13 +52,14 @@ public class Learnvlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet Learnvlet at " + request.getContextPath() + "</h1>");
-            out.println("<h2>"+kek.getVersionInfo()+"</h2>");
-            out.println("<p>Current time: "+kek.getCurDate()+"</p>");
-            for (String s: getDate()){
-                out.println("<p>"+s+"</p>");
+            for(DataBaseItem dbi: recieveTableContent("COMPANIES")){
+                for(String s: dbi.getItemValues()){
+                    out.println("<h2>"+s+"</h2>"); 
+                }
             }
             out.println("</body>");
             out.println("</html>");
+           
         }
     }
 
@@ -73,7 +75,10 @@ public class Learnvlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try{
         processRequest(request, response);
+        } catch(SQLException e){            
+        }
     }
 
     /**
@@ -87,7 +92,10 @@ public class Learnvlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try{
+            processRequest(request, response);
+            } catch(SQLException e){            
+        }
     }
 
     /**
@@ -100,23 +108,19 @@ public class Learnvlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public void connect(){
-         try{
-            kek.SQLconnect();
-        } catch(SQLException e){            
-        };       
-    }
     
-    public String[] getDate(){        
-        String[] stringAR = new String[kek.getList().size()];
-        int i = 0;
-        ArrayList <String> list = kek.getList();
-        for(String s: list){                
-                stringAR[i]=s;
-                i++;
+    private DataBaseItem[] recieveTableContent(String tableName) throws SQLException{             
+            DataBaseItem[] recievedDBI = DBAH.getDBI(tableName);
+            DataBaseItem[] dbi= new DataBaseItem[recievedDBI.length];
+            for(int i=0;i<recievedDBI.length;i++){
+                dbi[i]=recievedDBI[i];
             }
-        return stringAR;
-        }
+            //DBAH.addNewGameToTable("The Crew", "Racing", 7, "Windows", 12, "English", 64, 64, "22.12.2017", 9.99);
+            //DBAH.addNewDeveloperToTable("Mark Smith", "22.12.2017", "Moscow", 7);
+            DBAH.addNewCompanyToTable("Epic Games", "epic-games.com", "22.12.1995", "USA");
+            return dbi;
+    }
+
  }
     
 
