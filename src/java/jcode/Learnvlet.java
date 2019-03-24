@@ -41,10 +41,10 @@ public class Learnvlet extends HttpServlet {
      * @throws java.sql.SQLException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
-        response.setContentType("text/html;charset=UTF-8");
+            throws ServletException, IOException, SQLException {       
+        /*response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */           
+            // TODO output your page here. You may use following sample code.            
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -52,7 +52,7 @@ public class Learnvlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet Learnvlet at " + request.getContextPath() + "</h1>");
-            for(DataBaseItem dbi: recieveTableContent("COMPANIES")){
+            for(DataBaseItem dbi: recieveTableContent("GAMES")){
                 for(String s: dbi.getItemValues()){
                     out.println("<h2>"+s+"</h2>"); 
                 }
@@ -60,7 +60,7 @@ public class Learnvlet extends HttpServlet {
             out.println("</body>");
             out.println("</html>");
            
-        }
+        }*/
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -91,11 +91,49 @@ public class Learnvlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try{
-            processRequest(request, response);
-            } catch(SQLException e){            
-        }
+            throws ServletException, IOException {       
+        String recievedRequest = request.getParameter("request");
+        System.out.println(recievedRequest);
+        int newGameCompanyID;
+        switch (recievedRequest){
+                case("addNewGame"):
+                   try{
+                        if(DBAH.checkCompanyExistence(request.getParameter("companyName"))!=-1){
+                            newGameCompanyID = DBAH.checkCompanyExistence(request.getParameter("companyName"));
+                            DBAH.addNewGameToTable(request.getParameter("gameName"),
+                                    request.getParameter("gameGenre"),
+                                    newGameCompanyID,
+                                    request.getParameter("platform"),
+                                    Integer.parseInt(request.getParameter("pegi")),
+                                    request.getParameter("mainLanguage"),
+                                    Integer.parseInt(request.getParameter("multiplayer")),
+                                    Integer.parseInt(request.getParameter("coop")),
+                                    request.getParameter("releaseDate"),
+                                    Double.parseDouble(request.getParameter("price"))
+                                    );
+                        } else{
+                            DBAH.addNewEmptyCompany(request.getParameter("companyName"));
+                            newGameCompanyID = DBAH.checkCompanyExistence(request.getParameter("companyName"));
+                            DBAH.addNewGameToTable(request.getParameter("gameName"),
+                                    request.getParameter("gameGenre"),
+                                    newGameCompanyID,
+                                    request.getParameter("platform"),
+                                    Integer.parseInt(request.getParameter("pegi")),
+                                    request.getParameter("mainLanguage"),
+                                    Integer.parseInt(request.getParameter("multiplayer")),
+                                    Integer.parseInt(request.getParameter("coop")),
+                                    request.getParameter("releaseDate"),
+                                    Double.parseDouble(request.getParameter("price"))
+                                    );
+                        }
+                    } catch(SQLException e){
+                        System.err.println("SQL error : "+e.getMessage());
+                    }
+                    
+                    
+                break;
+
+            }
     }
 
     /**
@@ -117,7 +155,10 @@ public class Learnvlet extends HttpServlet {
             }
             //DBAH.addNewGameToTable("The Crew", "Racing", 7, "Windows", 12, "English", 64, 64, "22.12.2017", 9.99);
             //DBAH.addNewDeveloperToTable("Mark Smith", "22.12.2017", "Moscow", 7);
-            DBAH.addNewCompanyToTable("Epic Games", "epic-games.com", "22.12.1995", "USA");
+            //DBAH.addNewCompanyToTable("Epic Games", "epic-games.com", "22.12.1995", "USA");
+            //DBAH.setNewValuesToCompany(25, "Epic Games",  "epic-games.com", "10.12.1995", "USSSSA");
+            DBAH.setNewValuesToDeveloper(29, "Mark Sledge", "22.12.2017", "Moscow", 7);
+            //DBAH.setNewValuesToGame(9,"The Crew 2", "Racing", 7, "Windows", 12, "English", 64, 64, "22.12.2017", 9.99);
             return dbi;
     }
 

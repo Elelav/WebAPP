@@ -25,25 +25,44 @@
                     <div class="menu">
                         <nav>                        
                                 <ul>
+                                    <li class="inactive"></li>   
+                                    <li class="inactive"></li>   
                                       <li><a href="index.html"><span>Главная<span/></a></li>
-                                      <li><a href="catalog.html">Каталог игр</a></li>
-                                      <li><a href="stores.html">Магазины</a></li>
-                                      <li class="active"><a href="devs.html" class="active">Разработчики</a> </li>                            
+                                      <li><a href="games.jsp">Каталог игр</a></li>
+                                      <li><a href="companies.jsp">Компании</a></li>
+                                      <li class="active"><a href="devs.jsp" class="active">Разработчики</a> </li> 
+                                      <li class="inactive"></li>   
+                                      
+                                      <li class="inactive"></li>   
+                                      <li class="inactive"></li>  
+                                      <li class="inactive"></li>
+                                      <li class="inactive"></li>
+                                      <li class="inactive"></li>
+                                      <li class="inactive"></li>
+                                      <li class="inactive"></li>
+                                      <li class="inactive"></li>
                                 </ul>                       
                         </nav>
                     </div>  
                     <div class="content">
-                        <table>
-                            <tr><th>ID</th><th>Date</th></tr>
+                        <table>                  
+                            
+                             <tr><th>Developers</th></tr>
                             <%@ page import ="jcode.*" %>
-                            <%             
-                              JDBC kek = new JDBC();
-                              kek.simpleSQL();
+                            <%
+                                String pageTableName = "DEVELOPERS";
+                                DataBaseActivitiesHandler DBAH = new DataBaseActivitiesHandler();
+                                DataBaseItem dbi = new DataBaseItem(DBAH, pageTableName);
                                %>
-                               <%for(int i =0;i<kek.lolArray().length;i++){
-                                   %><tr><td><%out.println(kek.lolArray()[i]);%></td>                     
-                               <td><%out.println(kek.lolArray()[i+kek.lolArray().length/2]);%></td><%                                   
-                               }%></tr>
+                               <%for(int i =0;i<dbi.getDBIArray().length;i++){
+                                   %><tr><% for(int j=0;j<dbi.getDBIArray()[i].getItemValues().length;j++){%> 
+                                        <td><%if(j==1){
+                                            %><a href="itemview.jsp?id=<%out.print(dbi.getDBIArray()[i].getItemValues()[j-1]);%>&tableName=<%out.print(pageTableName);%>"><%out.println(dbi.getDBIArray()[i].getItemValues()[j]);%></a><%}
+                                        else{
+                                                out.println(dbi.getDBIArray()[i].getItemValues()[j]);
+                                        }%></td>
+                              <%                                   
+                               }}%></tr>
                         </table>
                     </div>
                 </div>

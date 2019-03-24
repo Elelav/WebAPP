@@ -87,3 +87,78 @@ nav li a:hover, li a:focus{
 .menu .inactive{
     border-style: none;
 }
+
+tr {
+    color: #c1e2b3;
+}
+
+tr td{
+    padding: 10px;
+}
+
+h2{
+     color: #c1e2b3;
+}
+
+p{
+      color: #c1e2b3;
+}
+
+.gameName input{
+    margin-left:170px;
+    color:#000;
+}
+
+.gameGenre input{
+    margin-top: 10px;
+    margin-left:239px;
+    color:#000;
+}
+.companyName input{
+    margin-left:111px;
+        margin-top: 10px;
+    color:#000;
+}
+.platform input{
+    margin-left:177px;
+        margin-top: 10px;
+    color:#000;
+}
+.pegi input{
+    margin-left:93px;
+        margin-top: 10px;
+    color:#000;
+}
+.mainLanguage input{
+    margin-left:243px;
+        margin-top: 10px;
+    color:#000;
+}
+
+.multiplayer input{
+    margin-left:10px;
+        margin-top: 10px;
+    color:#000;
+}
+.coop input{
+    margin-left:22px;
+        margin-top: 10px;
+    color:#000;
+}
+.releaseDate input{
+    margin-left:189px;
+        margin-top: 10px;
+    color:#000;
+}
+
+.price input{
+    margin-left:242px;
+        margin-top: 10px;
+    color:#000;
+}
+
+.submitButton input{
+    margin-left:290px;
+    margin-top: 30px;
+    color:#000;
+}

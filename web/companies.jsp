@@ -1,3 +1,4 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -27,11 +28,11 @@ and open the template in the editor.
                         <nav>                        
                                 <ul>
 									  <li class="inactive"></li>
-                                      <li class="inactive"></li>
+                                       <li class="inactive"></li>
                                       <li><a href="index.html"><span>Главная<span/></a></li>
-                                      <li class="active"><a href="catalog.html" class="active">Каталог игр</a></li>
-                                      <li><a href="stores.html">Магазины</a></li>
-                                      <li><a href="devs.html">Разработчики</a> </li>   
+                                      <li><a href="games.jsp" class="active">Каталог игр</a></li>
+                                      <li class="active"><a href="companies.jsp">Компании</a></li>
+                                      <li><a href="devs.jsp">Разработчики</a> </li>   
 									  <li class="inactive"></li>
                                       <li class="inactive"></li>   
                                       <li class="inactive"></li>  
@@ -45,7 +46,25 @@ and open the template in the editor.
                         </nav>
                     </div>  
                     <div class="content">
-                        <img src="images/1.jpg">                                
+                         <table>                  
+                            
+                             <tr><th>Companies</th></tr>
+                            <%@ page import ="jcode.*" %>
+                            <%
+                                String pageTableName = "COMPANIES";
+                                DataBaseActivitiesHandler DBAH = new DataBaseActivitiesHandler();
+                                DataBaseItem dbi = new DataBaseItem(DBAH, pageTableName);
+                               %>
+                               <%for(int i =0;i<dbi.getDBIArray().length;i++){
+                                   %><tr><% for(int j=0;j<dbi.getDBIArray()[i].getItemValues().length;j++){%> 
+                                        <td><%if(j==1){
+                                            %><a href="itemview.jsp?id=<%out.print(dbi.getDBIArray()[i].getItemValues()[j-1]);%>&tableName=<%out.print(pageTableName);%>"><%out.println(dbi.getDBIArray()[i].getItemValues()[j]);%></a><%}
+                                        else{
+                                                out.println(dbi.getDBIArray()[i].getItemValues()[j]);
+                                        }%></td>
+                              <%                                   
+                               }}%></tr>
+                        </table>               
                     </div>
                 </div>
         </div>

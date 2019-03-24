@@ -15,7 +15,6 @@ import oracle.jdbc.pool.OracleDataSource;
 
 public class DataBaseActivitiesHandler {
 
-    private ArrayList<String> columnContent;
     DataBaseItem[] dbi;
     private String[] strArr;
 
@@ -38,19 +37,15 @@ public class DataBaseActivitiesHandler {
         while (rs.next()) {
             rowCount = rs.getInt(1);
         }
-        columnContent = new ArrayList<>();
         dbi = new DataBaseItem[rowCount];       
         rs = statement.executeQuery("SELECT * FROM "+ tableName);
         while (rs.next()) {   
                 strArr=new String[colCount];
                 for(int j=1;j<=colCount;j++){
                         strArr[j-1]=rs.getString(j);
-                        System.out.println("Adding to row : " + rs.getString(j));
                 }
-                columnContent.add(rs.getString(2));
                 DataBaseItem dbiContent = new DataBaseItem();
                 dbiContent.setItemValues(strArr, strArr.length);
-                System.out.println("Adding to DBI : " + strArr[1]);
                 dbi[i]=dbiContent;
                 i++;
         }         
@@ -65,7 +60,17 @@ public class DataBaseActivitiesHandler {
         Statement statement = conn.createStatement();
         ResultSet rs;
         rs = statement.executeQuery("INSERT INTO GAMES (GAME_NAME,GAME_GENRE,COMPANY_ID,PLATFORM,PEGI,MAIN_LANGUAGE,MULTIPLAYER,CO_OP,RELEASE_DATE,PRICE)"
-                + "VALUES('"+gameName+"','"+gameGenre+"',"+companyID+" ,'"+platform+"',"+pegi+",'"+mainLanguage+"','"+multiplayer+" ','"+coop+"',TO_DATE('"+releaseDate+"', 'DD.MM.YYYY'), "+price+")");     
+                + "VALUES('"
+                +gameName+"','"
+                +gameGenre+"',"
+                +companyID+" ,'"
+                +platform+"',"
+                +pegi+",'"
+                +mainLanguage+"','"
+                +multiplayer+" ','"
+                +coop
+                +"',TO_DATE('"+releaseDate+"', 'DD.MM.YYYY'), "
+                +price+")");     
         rs.close();
         statement.close();
         conn.close();
@@ -76,7 +81,11 @@ public class DataBaseActivitiesHandler {
         Statement statement = conn.createStatement();
         ResultSet rs;
         rs = statement.executeQuery("INSERT INTO COMPANIES (COMPANY_NAME,HOME_PAGE,CREATION_DATE,COUNTRY)"
-                + "VALUES('"+companyName+"','"+homePage+"',"+"TO_DATE('"+creationDate+"', 'DD.MM.YYYY'),'"+country+"')");     
+                + "VALUES('"
+                +companyName+"','"
+                +homePage+"',"
+                 +"TO_DATE('"+creationDate+"', 'DD.MM.YYYY'),'"
+                +country+"')");     
         rs.close();
         statement.close();
         conn.close();
@@ -87,12 +96,167 @@ public class DataBaseActivitiesHandler {
         Statement statement = conn.createStatement();
         ResultSet rs;
         rs = statement.executeQuery("INSERT INTO DEVELOPERS (DEVELOPER_NAME,EMPLOYMENT_DATE,ADDRESS,COMPANY_ID)"
-                + "VALUES('"+developerName+"',"+"TO_DATE('"+employmentDate+"','DD.MM.YYYY'), '"+address+"',"+companyID+")");     
+                + "VALUES('"
+                +developerName+"',"
+                +"TO_DATE('"+employmentDate+"','DD.MM.YYYY'), '"
+                +address+"',"
+                +companyID+")"
+        );     
         rs.close();
         statement.close();
         conn.close();
     }
-    
+     
+     
+     public void setNewValuesToCompany(int companyID, String companyName, String homePage, String creationDate, String country){
+                try{         
+                Connection conn = openSQLConnection();
+                Statement statement = conn.createStatement();
+                ResultSet rs;
+               
+                rs = statement.executeQuery("UPDATE COMPANIES "
+                        + "SET "
+                        + "COMPANY_NAME = '"+companyName+"',"
+                        + "HOME_PAGE = '"+ homePage+"',"
+                        + "CREATION_DATE = '"+creationDate+"',"
+                        + "COUNTRY = '"+ country+"'"
+                        + "WHERE COMPANY_ID = '"+companyID+"'"               
+                );
+                rs.close();
+                statement.close();
+                conn.close();
+                } catch(SQLException e){
+                    System.err.println("SQL error : "+e.getMessage());
+                }
+     }
+     
+     public void setNewValuesToDeveloper(int developerID, String developerName, String employmentDate, String address, int companyID){
+                try{         
+                Connection conn = openSQLConnection();
+                Statement statement = conn.createStatement();
+                ResultSet rs;
+               
+                rs = statement.executeQuery("UPDATE DEVELOPERS "
+                        + "SET "
+                        + "DEVELOPER_NAME = '"+developerName+"',"                      
+                        + "EMPLOYMENT_DATE = '"+employmentDate+"',"
+                        + "ADDRESS = '"+ address+"',"
+                        + "COMPANY_ID = '"+companyID+"'" 
+                        + "WHERE DEVELOPER_ID = '"+developerID+"'"         
+                );
+                rs.close();
+                statement.close();
+                conn.close();
+                } catch(SQLException e){
+                    System.err.println("SQL error : "+e.getMessage());
+                }
+     }
+     
+     public void setNewValuesToGame(int gameID,String gameName, String gameGenre, int companyID, String platform, int pegi, String mainLanguage, int multiplayer, int coop, String releaseDate, double price){ //BUG
+                try{         
+                Connection conn = openSQLConnection();
+                Statement statement = conn.createStatement();
+                ResultSet rs;
+               
+                rs = statement.executeQuery("UPDATE GAMES "
+                        + "SET "
+                        + "GAME_NAME = '"+gameName+"',"
+                        + "GAME_GENRE = '"+ gameGenre+"',"
+                        + "COMPANY_ID = '"+ companyID+"',"
+                        + "PLATFORM = '"+ platform+"',"
+                        + "PEGI = '"+ pegi+"',"
+                        + "MAIN_LANGUAGE = '"+ mainLanguage+"',"
+                        + "MULTIPLAYER = '"+ multiplayer+"',"
+                        + "CO_OP = '"+coop+"',"
+                        + "RELEASE_DATE = '"+ releaseDate+"',"
+                        + "PRICE = '"+ price+"'"
+                        + "WHERE GAME_ID= '"+gameID+"'"               
+                );
+                rs.close();
+                statement.close();
+                conn.close();
+                } catch(SQLException e){
+                    System.err.println("SQL error : "+e.getMessage());
+                }
+     }
+     
+     
+     public DataBaseItem getItemByID(String ID, String tableName){
+                try{         
+                    Connection conn = openSQLConnection();
+                    Statement statement = conn.createStatement();
+                    String idColumnName = "";
+                    int colCount = 0;
+                    ResultSet rs;  
+                    rs = statement.executeQuery("SELECT * FROM " + tableName);
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    colCount=rsmd.getColumnCount();
+                    rs = statement.executeQuery("SELECT column_name FROM all_tab_columns WHERE table_name='"+tableName+"'");
+                    while (rs.next()) {   
+                        idColumnName=rs.getString(1);
+                        break;
+                    }
+                    rs = statement.executeQuery("SELECT * FROM "+tableName
+                            +" WHERE "+ idColumnName+"= "+ID);
+                    while (rs.next()) {   
+                        strArr=new String[colCount];
+                        for(int j=1;j<=colCount;j++){
+                                strArr[j-1]=rs.getString(j);                                
+                        }
+                    }
+                   DataBaseItem dbiContent = new DataBaseItem();
+                   dbiContent.setItemValues(strArr, strArr.length);
+                    rs.close();
+                    statement.close();
+                    conn.close();
+                    return dbiContent;
+                } catch(SQLException e){
+                    System.err.println("SQL error : "+e.getMessage());
+                }    
+                return null;
+     }
+     
+     public int checkCompanyExistence(String companyName){
+                 String cID=null;
+                 int companyID;
+                 try{  
+                        Connection conn = openSQLConnection();
+                        Statement statement = conn.createStatement();
+                        ResultSet rs;  
+                        rs = statement.executeQuery("SELECT * FROM COMPANIES WHERE COMPANY_NAME = '"
+                                + companyName+"'");
+                        while(rs.next()){                           
+                            cID = rs.getString(1);
+                            System.out.println("C ID: "+cID);
+                        } 
+                        rs.close();
+                        statement.close();
+                        conn.close();
+                         } catch(SQLException e){
+                        System.err.println("SQL error : "+e.getMessage());
+                } 
+                if(cID!=null){ 
+                companyID=Integer.parseInt(cID);
+                return companyID;
+                } else{
+                    return -1;
+                }
+     }
+     
+      public void addNewEmptyCompany(String companyName){
+                try{  
+                        Connection conn = openSQLConnection();
+                        Statement statement = conn.createStatement();
+                        ResultSet rs; 
+                        rs = statement.executeQuery("INSERT INTO COMPANIES(COMPANY_NAME) VALUES( '"+companyName+"')");
+                        rs.close();
+                        statement.close();
+                        conn.close();
+                          } catch(SQLException e){
+                        System.err.println("SQL error : "+e.getMessage());
+                } 
+     }
+        
 
     private Connection openSQLConnection() throws SQLException {
         OracleDataSource ods = new OracleDataSource();
