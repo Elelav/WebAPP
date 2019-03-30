@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
+
+
 import java.sql.*;
 import oracle.jdbc.*;
 import oracle.jdbc.pool.OracleDataSource;
@@ -41,7 +43,10 @@ public class Learnvlet extends HttpServlet {
      * @throws java.sql.SQLException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {       
+            throws ServletException, IOException, SQLException {
+        //DBAH.setNewValuesToCompany(28, "New Company", "new.com", "21.12.1992", "USSR");
+        //DBAH.setNewValuesToDeveloper(29, "Ken Block", "22.12.2017", "Samara", 7);
+        DBAH.setNewValuesToGame(9,"The Crew 2", "Racing", 7, "Windows", 12, "English", 64, 64, "22.12.2017", 9.99);
         /*response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             // TODO output your page here. You may use following sample code.            
@@ -94,10 +99,9 @@ public class Learnvlet extends HttpServlet {
             throws ServletException, IOException {       
         String recievedRequest = request.getParameter("request");
         System.out.println(recievedRequest);
-        int newGameCompanyID;
+        int newGameCompanyID;        
         switch (recievedRequest){
-                case("addNewGame"):
-                   try{
+                case("addNewGame"):                  
                         if(DBAH.checkCompanyExistence(request.getParameter("companyName"))!=-1){
                             newGameCompanyID = DBAH.checkCompanyExistence(request.getParameter("companyName"));
                             DBAH.addNewGameToTable(request.getParameter("gameName"),
@@ -125,15 +129,112 @@ public class Learnvlet extends HttpServlet {
                                     request.getParameter("releaseDate"),
                                     Double.parseDouble(request.getParameter("price"))
                                     );
-                        }
-                    } catch(SQLException e){
-                        System.err.println("SQL error : "+e.getMessage());
-                    }
-                    
-                    
+                        } 
+                        response.sendRedirect(request.getContextPath()+"/games.jsp");
                 break;
-
-            }
+                
+                case("addCompany"):
+                    DBAH.addNewCompanyToTable(request.getParameter("companyName"), 
+                            request.getParameter("homePage"), 
+                            request.getParameter("creationDate"), 
+                            request.getParameter("country"));
+                    response.sendRedirect(request.getContextPath()+"/companies.jsp");
+                break;
+                
+                case("addDeveloper"):
+                      if(DBAH.checkCompanyExistence(request.getParameter("companyName"))!=-1){
+                            newGameCompanyID = DBAH.checkCompanyExistence(request.getParameter("companyName"));
+                            DBAH.addNewDeveloperToTable(request.getParameter("developerName"),
+                                    request.getParameter("employmentDate"),
+                                    request.getParameter("address"),
+                                    newGameCompanyID);
+                    } else{
+                        DBAH.addNewEmptyCompany(request.getParameter("companyName"));
+                        newGameCompanyID = DBAH.checkCompanyExistence(request.getParameter("companyName"));
+                        DBAH.addNewDeveloperToTable(request.getParameter("developerName"),
+                                    request.getParameter("employmentDate"),
+                                    request.getParameter("address"),
+                                    newGameCompanyID);     
+                    } 
+                      response.sendRedirect(request.getContextPath()+"/devs.jsp");
+                break;
+                case("deletedeveloper"):
+                    for(String s: getParameterList(request).subList(1,getParameterList(request).size())){
+                        DBAH.deleteEntryFromTableByID(request.getParameter(s), "DEVELOPERS");                        
+                    }
+                    response.sendRedirect(request.getContextPath()+"/devs.jsp");
+                break;
+                case("deletegame"):
+                    for(String s: getParameterList(request).subList(1,getParameterList(request).size())){
+                        DBAH.deleteEntryFromTableByID(request.getParameter(s), "GAMES");                        
+                    }
+                    response.sendRedirect(request.getContextPath()+"/games.jsp");
+                break;
+                case("deletecompany"):
+                    for(String s: getParameterList(request).subList(1,getParameterList(request).size())){
+                        DBAH.deleteEntryFromTableByID(request.getParameter(s), "COMPANIES");                        
+                    }
+                    response.sendRedirect(request.getContextPath()+"/companies.jsp");
+                break;
+                case("editGame"):
+                    if(DBAH.checkCompanyExistence(request.getParameter("companyName"))!=-1){
+                            newGameCompanyID = DBAH.checkCompanyExistence(request.getParameter("companyName"));
+                            DBAH.setNewValuesToGame(Integer.parseInt(request.getParameter("id")),
+                                    request.getParameter("gameName"),
+                                    request.getParameter("gameGenre"),
+                                    newGameCompanyID,
+                                    request.getParameter("platform"),
+                                    Integer.parseInt(request.getParameter("pegi")),
+                                    request.getParameter("mainLanguage"),
+                                    Integer.parseInt(request.getParameter("multiplayer")),
+                                    Integer.parseInt(request.getParameter("coop")),
+                                    request.getParameter("releaseDate"),
+                                    Double.parseDouble(request.getParameter("price")));
+                    } else{
+                        DBAH.addNewEmptyCompany(request.getParameter("companyName"));
+                        newGameCompanyID = DBAH.checkCompanyExistence(request.getParameter("companyName"));
+                        DBAH.setNewValuesToGame(Integer.parseInt(request.getParameter("id")),
+                                    request.getParameter("gameName"),
+                                    request.getParameter("gameGenre"),
+                                    newGameCompanyID,
+                                    request.getParameter("platform"),
+                                    Integer.parseInt(request.getParameter("pegi")),
+                                    request.getParameter("mainLanguage"),
+                                    Integer.parseInt(request.getParameter("multiplayer")),
+                                    Integer.parseInt(request.getParameter("coop")),
+                                    request.getParameter("releaseDate"),
+                                    Double.parseDouble(request.getParameter("price")));                      
+                    }
+                response.sendRedirect(request.getContextPath()+"/games.jsp");                    
+                break;
+                case("editCompany"):
+                    DBAH.setNewValuesToCompany(Integer.parseInt(request.getParameter("id")), 
+                            request.getParameter("companyName"), 
+                            request.getParameter("homePage"), 
+                            request.getParameter("creationDate"), 
+                            request.getParameter("country"));
+                    response.sendRedirect(request.getContextPath()+"/companies.jsp");
+                break;
+                case("editDeveloper"):
+                      if(DBAH.checkCompanyExistence(request.getParameter("companyName"))!=-1){
+                            newGameCompanyID = DBAH.checkCompanyExistence(request.getParameter("companyName"));
+                            DBAH.setNewValuesToDeveloper(Integer.parseInt(request.getParameter("id")),
+                                    request.getParameter("developerName"),
+                                    request.getParameter("employmentDate"),
+                                    request.getParameter("address"),
+                                    newGameCompanyID);
+                    } else{
+                        DBAH.addNewEmptyCompany(request.getParameter("companyName"));
+                        newGameCompanyID = DBAH.checkCompanyExistence(request.getParameter("companyName"));
+                        DBAH.setNewValuesToDeveloper(Integer.parseInt(request.getParameter("id")),
+                                    request.getParameter("developerName"),
+                                    request.getParameter("employmentDate"),
+                                    request.getParameter("address"),
+                                    newGameCompanyID);            
+                    }
+                response.sendRedirect(request.getContextPath()+"/devs.jsp");
+                break;                
+            }        
     }
 
     /**
@@ -146,19 +247,21 @@ public class Learnvlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    
+    private ArrayList<String> getParameterList(HttpServletRequest request){
+        ArrayList <String> requestParameters = new ArrayList<>();
+                    Enumeration <String> enumeration = request.getParameterNames();
+                    while(enumeration.hasMoreElements()){
+                        String parameterName = enumeration.nextElement();
+                        requestParameters.add(parameterName);
+                    }
+        return requestParameters;
+    }
     private DataBaseItem[] recieveTableContent(String tableName) throws SQLException{             
             DataBaseItem[] recievedDBI = DBAH.getDBI(tableName);
             DataBaseItem[] dbi= new DataBaseItem[recievedDBI.length];
             for(int i=0;i<recievedDBI.length;i++){
                 dbi[i]=recievedDBI[i];
             }
-            //DBAH.addNewGameToTable("The Crew", "Racing", 7, "Windows", 12, "English", 64, 64, "22.12.2017", 9.99);
-            //DBAH.addNewDeveloperToTable("Mark Smith", "22.12.2017", "Moscow", 7);
-            //DBAH.addNewCompanyToTable("Epic Games", "epic-games.com", "22.12.1995", "USA");
-            //DBAH.setNewValuesToCompany(25, "Epic Games",  "epic-games.com", "10.12.1995", "USSSSA");
-            DBAH.setNewValuesToDeveloper(29, "Mark Sledge", "22.12.2017", "Moscow", 7);
-            //DBAH.setNewValuesToGame(9,"The Crew 2", "Racing", 7, "Windows", 12, "English", 64, 64, "22.12.2017", 9.99);
             return dbi;
     }
 

@@ -47,11 +47,11 @@
                         <table>                            
                             <%@ page import ="jcode.*" %>
                             <%
-                                DataBaseActivitiesHandler DBAH = new DataBaseActivitiesHandler();
-                                DataBaseItem dbi = new DataBaseItem();
-                                String id = request.getParameter("id");
+                                DataBaseActivitiesHandler DBAH = new DataBaseActivitiesHandler();                                
+                                String inputData = request.getParameter("search");
+                                System.out.println("Intpud data "+inputData);
                                 String tableName = request.getParameter("tableName");
-                                dbi = DBAH.getItemByID(id, tableName);
+                                DataBaseItem dbi = DBAH.searchInTable(tableName, inputData);
                                 switch (tableName) {
                                     case ("GAMES"):
                                         %><h2>Game ID: <% out.println(dbi.getItemValues()[0]);%></h2> <%
@@ -65,7 +65,7 @@
                                         %><h2>Players in co-op: <% out.println(dbi.getItemValues()[8]);%></h2> <%
                                         %><h2>Release date: <% out.println(dbi.getItemValues()[9]);%></h2> <%
                                         %><h2>Price: <% out.println(dbi.getItemValues()[10]);%></h2> 
-                                        <a href="itemedit.jsp?id=<%out.print(id);%>&tableName=<%out.print(tableName);%>"><input type='submit' value='Редактировать'></a>
+                                        <a href="itemedit.jsp?id=<%out.print(dbi.getItemValues()[0]);%>&tableName=<%out.print(tableName);%>"><input type='submit' value='Редактировать'></a>
                                         <%
                                     break;
                                     case ("COMPANIES"):
@@ -74,7 +74,7 @@
                                         %><h2>Home page: <% out.println(dbi.getItemValues()[2]);%></h2> <%
                                         %><h2>Creation date: <% out.println(dbi.getItemValues()[3]);%></h2> <%
                                         %><h2>Country: <% out.println(dbi.getItemValues()[4]);%></h2> 
-                                       <a href="itemedit.jsp?id=<%out.println(id);%>&tableName=<%out.println(tableName);%>"><input type='submit' value='Редактировать'></a>
+                                       <a href="itemedit.jsp?id=<%out.println(dbi.getItemValues()[0]);%>&tableName=<%out.println(tableName);%>"><input type='submit' value='Редактировать'></a>
                                        <%                                                                
                                     break;
                                     case ("DEVELOPERS"):
@@ -83,7 +83,7 @@
                                         %><h2>Employment date: <% out.println(dbi.getItemValues()[2]);%></h2> <%
                                         %><h2>Address:  <% out.println(dbi.getItemValues()[3]);%></h2> <%
                                         %><h2>Company <% out.println(DBAH.getItemByID(dbi.getItemValues()[4],"COMPANIES").getItemValues()[1]);%></h2>
-                                        <a href="itemedit.jsp?id=<%out.println(id);%>&tableName=<%out.println(tableName);%>"><input type='submit' value='Редактировать'></a>
+                                        <a href="itemedit.jsp?id=<%out.println(dbi.getItemValues()[0]);%>&tableName=<%out.println(tableName);%>"><input type='submit' value='Редактировать'></a>
                                         <%       
                                     break;
                                 }%>

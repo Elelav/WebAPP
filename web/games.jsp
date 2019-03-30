@@ -46,28 +46,53 @@ and open the template in the editor.
                         </nav>
                     </div>                      
                     <div class="content">
-                          <table>                  
-                            
-                             <tr><th>Games</th></tr>
+                        <div class="search-bar">
+                            <form action="searchresult.jsp?tableName=GAMES" method="post">
+                                <table>
+                                    <th><div class="bar"><input type="text" name="search"></div><th>
+                                    <th><div class="search-button"><input type="submit"  value="Поиск"></div></th>
+                                </table>
+                            </form>
+                        </div>
+                        <table>      
+                          <form action="Learnvlet?request=deletegame" method="post">                                               
+                             <tr><th>Game ID</th>
+                             <th>Name</th>
+                             <th>Genre</th>
+                             <th>Comany</th>
+                             <th>Platform</th>
+                             <th>PEGI</th>
+                             <th>Language</th>
+                             <th>Players in multiplayer</th>
+                             <th>Players in co-op</th>
+                             <th>Release date</th>
+                             <th>Price ($)</th></tr>
                             <%@ page import ="jcode.*" %>
                             <%
                                 String pageTableName = "GAMES";
                                 DataBaseActivitiesHandler DBAH = new DataBaseActivitiesHandler();
                                 DataBaseItem dbi = new DataBaseItem(DBAH, pageTableName);
+                                DataBaseItem[] recievedDBI = dbi.getDBIArray().clone();
                                %>
                                <%for(int i =0;i<dbi.getDBIArray().length;i++){
-                                   %><tr><% for(int j=0;j<dbi.getDBIArray()[i].getItemValues().length;j++){%> 
+                                   %><tr><% for(int j=0;j<recievedDBI[i].getItemValues().length;j++){%> 
                                         <td><%if(j==1){
-                                            %><a href="itemview.jsp?id=<%out.print(dbi.getDBIArray()[i].getItemValues()[j-1]);%>&tableName=<%out.print(pageTableName);%>"><%out.println(dbi.getDBIArray()[i].getItemValues()[j]);%></a><%}
+                                            %><a href="itemview.jsp?id=<%out.print(recievedDBI[i].getItemValues()[j-1]);%>&tableName=<%out.print(pageTableName);%>"><%out.println(recievedDBI[i].getItemValues()[j]);%></a><%}
                                                 else if(j==3){
-                                                    out.println(DBAH.getItemByID(dbi.getDBIArray()[i].getItemValues()[j], "COMPANIES").getItemValues()[1]);
+                                                    out.println(DBAH.getItemByID(recievedDBI[i].getItemValues()[j], "COMPANIES").getItemValues()[1]);
                                                 }else   {
-                                                    out.println(dbi.getDBIArray()[i].getItemValues()[j]);
-                                        }%></td>
-                              <%                                   
-                               }}%></tr>
-                        </table> 
-                    </div>
+                                                    out.println(recievedDBI[i].getItemValues()[j]);
+                                        }%></td><%}%>
+                              <td><input type="checkbox" name="delete<%out.print(i);%>" value="<%out.print(recievedDBI[i].getItemValues()[0]);%>"></td><%}%></tr>
+                              </table>
+                              <div class='buttons'>
+                                    <table>
+                                    <th><div class="deleteSubmit"><input type="submit" value="Удалить выбранное"></div></th>                     
+                                </form>
+                                    <th><div class="addGameSubmit"><a href='createentry.jsp?tableName=GAMES'><input type="submit" value="Добавить новую игру"></a></div><th>
+                                    </table>
+                               </div>
+                        </div>
                 </div>
         </div>
  

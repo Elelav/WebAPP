@@ -30,7 +30,7 @@ and open the template in the editor.
 									  <li class="inactive"></li>
                                       <li class="inactive"></li>
                                       <li><a href="index.html"><span>Главная<span/></a></li>
-                                      <li class="active"><a href="games.jsp" class="active">Каталог игр</a></li>
+                                      <li class="active"><a href="games.jsp">Каталог игр</a></li>
                                       <li><a href="companies.jsp">Компании</a></li>
                                       <li><a href="devs.jsp">Разработчики</a> </li>   
 									  <li class="inactive"></li>
@@ -45,7 +45,10 @@ and open the template in the editor.
                                 </ul>                       
                         </nav>
                     </div>                      
-                    <div class="content"> 
+                    <div class="content"> <%String tableName = request.getParameter("tableName");
+                        switch(tableName){
+                            case("GAMES"):
+                        %>
                         <form action="Learnvlet?request=addNewGame" method="post">
                             <div class="gameName"><p>Название игры: <input name="gameName" type="text"><br></p></div>
                             <div class="gameGenre"><p>Жанр: <input name="gameGenre" type="text"><br></p> </div>
@@ -59,6 +62,29 @@ and open the template in the editor.
                             <div class="price"><p>Цена: <input name="price" pattern="\d+(\.\d{1,2})?"> <br></p></div>
                              <div class="submitButton"><input type="submit"></div>
                         </form>
+                        <%
+                            break;
+                            case("COMPANIES"):
+                            %>
+                            <form action="Learnvlet?request=addCompany>" method="post">
+                                            <div class="cCompanyName"><p>Название компании: <input name="companyName" type="text"><br></p></div>
+                                            <div class="homePage"><p>Домашняя страница: <input name="homePage" type="text"><br></p> </div>
+                                            <div class="creationDate"><p>Дата создания:  <input name="creationDate" pattern="\d\d\.\d\d\.\d\d\d\d"> <br></p></div>
+                                            <div class="country"><p>Страна:  <input name="platform" type="country" value=>   <br></p></div>                                                                                
+                                            <div class="submitButton"><input type="submit"></div>
+                              </form>
+                        <%
+                            break;
+                            case("DEVELOPERS"):                            
+                        %>
+                                <form action="Learnvlet?request=addDeveloper" method="post">
+                                            <div class="developerName"><p>Имя разработчика: <input name="developerName" type="text"><br></p></div>
+                                            <div class="employmentDate"><p>Дата устройства: <input name="employmentDate" pattern="\d\d\.\d\d\.\d\d\d\d"><br></p> </div>
+                                            <div class="address"><p>Адрес: <input name="address" type="text" > <br></p></div>
+                                            <div class="companyName"><p>Компания: <input name="companyName" type="text">   <br></p></div>                                            
+                                             <div class="submitButton"><input type="submit"></div>
+                                </form>
+                        <%break;}%>
                                
                     </div>
                 </div>

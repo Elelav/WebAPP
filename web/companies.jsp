@@ -30,8 +30,8 @@ and open the template in the editor.
 									  <li class="inactive"></li>
                                        <li class="inactive"></li>
                                       <li><a href="index.html"><span>Главная<span/></a></li>
-                                      <li><a href="games.jsp" class="active">Каталог игр</a></li>
-                                      <li class="active"><a href="companies.jsp">Компании</a></li>
+                                      <li><a href="games.jsp">Каталог игр</a></li>
+                                      <li><a href="companies.jsp" class="active">Компании</a></li>
                                       <li><a href="devs.jsp">Разработчики</a> </li>   
 									  <li class="inactive"></li>
                                       <li class="inactive"></li>   
@@ -46,24 +46,45 @@ and open the template in the editor.
                         </nav>
                     </div>  
                     <div class="content">
-                         <table>                  
-                            
-                             <tr><th>Companies</th></tr>
+                         <div class="search-bar">
+                            <form action="searchresult.jsp?tableName=COMPANIES" method="post">
+                                <table>
+                                    <th><div class="bar"><input type="text" name="search"></div><th>
+                                    <th><div class="search-button"><input type="submit"  value="Поиск"></div></th>
+                                </table>
+                            </form>
+                        </div>
+                        <table>                        
+                           <form action="Learnvlet?request=deletecompany" method="post">                           
+                             <tr><th>Company number </th>
+                             <th>Name</th>
+                             <th>Home page</th>
+                             <th>Creation date</th>
+                             <th>Country</th></tr>
                             <%@ page import ="jcode.*" %>
                             <%
                                 String pageTableName = "COMPANIES";
                                 DataBaseActivitiesHandler DBAH = new DataBaseActivitiesHandler();
                                 DataBaseItem dbi = new DataBaseItem(DBAH, pageTableName);
+                                DataBaseItem[] recievedDBI = dbi.getDBIArray().clone();
                                %>
                                <%for(int i =0;i<dbi.getDBIArray().length;i++){
-                                   %><tr><% for(int j=0;j<dbi.getDBIArray()[i].getItemValues().length;j++){%> 
+                                   %><tr><% for(int j=0;j<recievedDBI[i].getItemValues().length;j++){%> 
                                         <td><%if(j==1){
-                                            %><a href="itemview.jsp?id=<%out.print(dbi.getDBIArray()[i].getItemValues()[j-1]);%>&tableName=<%out.print(pageTableName);%>"><%out.println(dbi.getDBIArray()[i].getItemValues()[j]);%></a><%}
+                                            %><a href="itemview.jsp?id=<%out.print(recievedDBI[i].getItemValues()[j-1]);%>&tableName=<%out.print(pageTableName);%>"><%out.println(recievedDBI[i].getItemValues()[j]);%></a><%}
                                         else{
-                                                out.println(dbi.getDBIArray()[i].getItemValues()[j]);
+                                                out.println(recievedDBI[i].getItemValues()[j]);
                                         }%></td>
                               <%                                   
-                               }}%></tr>
+                               }%><td><input type="checkbox" name="delete<%out.print(i);%>" value="<%out.print(recievedDBI[i].getItemValues()[0]);%>"></td><%}%></tr>
+                              </table>
+                              <div class='buttons'>
+                                    <table>
+                                    <th><div class="deleteSubmit"><input type="submit" value="Удалить выбранное"></div></th>                     
+                                   </form>
+                                    <th><div class="addCompanySubmit"><a href='createentry.jsp?tableName=COMPANIES'><input type="submit" value="Добавить новую компанию"></a></div><th>
+                                    </table>
+                               </div>
                         </table>               
                     </div>
                 </div>
